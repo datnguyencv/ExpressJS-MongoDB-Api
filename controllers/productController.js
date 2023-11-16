@@ -1,11 +1,12 @@
 const Product = require('../models/productModel')
 const asyncHandler = require('express-async-handler')
+const {model} = require("mongoose");
 
 // get all product
 const getProducts = asyncHandler(async(req, res) => {
     try {
-        const products = await Product.find({});
-        console.log(products);
+        // const products = await model('Product').find({});
+        const products = await model('Product').find({});
         res.status(200).json(products);
     } catch (error) {
         res.status(500);
@@ -17,8 +18,7 @@ const getProducts = asyncHandler(async(req, res) => {
 const getProduct = asyncHandler(async(req, res) =>{
     try {
         const {id} = req.params;
-        const product = await Product.findById(id);
-        console.log(product);
+        const product = await model('Product').findById(id);
         res.status(200).json(product);
     } catch (error) {
         res.status(500);
@@ -29,9 +29,9 @@ const getProduct = asyncHandler(async(req, res) =>{
 // create a product
 const createProduct = asyncHandler(async(req, res) => {
     try {
-        const product = await Product.create(req.body)
+        const product = await model('Product').create(req.body)
         res.status(200).json(product);
-        
+
     } catch (error) {
         res.status(500);
         throw new Error(error.message);
@@ -42,15 +42,15 @@ const createProduct = asyncHandler(async(req, res) => {
 const updateProduct = asyncHandler(async(req, res) => {
     try {
         const {id} = req.params;
-        const product = await Product.findByIdAndUpdate(id, req.body);
+        const product = await model('Product').findByIdAndUpdate(id, req.body);
         // we cannot find any product in database
         if(!product){
             res.status(404);
             throw new Error(`cannot find any product with ID ${id}`);
         }
-        const updatedProduct = await Product.findById(id);
+        const updatedProduct = await model('Product').findById(id);
         res.status(200).json(updatedProduct);
-        
+
     } catch (error) {
         res.status(500);
         throw new Error(error.message);
@@ -60,13 +60,13 @@ const updateProduct = asyncHandler(async(req, res) => {
 const deleteProduct = asyncHandler(async(req, res) =>{
     try {
         const {id} = req.params;
-        const product = await Product.findByIdAndDelete(id);
+        const product = await model('Product').findByIdAndDelete(id);
         if(!product){
             res.status(404);
             throw new Error(`cannot find any product with ID ${id}`);
         }
         res.status(200).json(product);
-        
+
     } catch (error) {
         res.status(500);
         throw new Error(error.message);
